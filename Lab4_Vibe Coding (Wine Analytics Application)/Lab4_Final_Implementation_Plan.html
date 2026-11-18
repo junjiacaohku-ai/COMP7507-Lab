@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wine Selection Assistant — Final Implementation Plan</title>
+<style>
+  @page { size: A4; margin: 13mm 15mm 14mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    color: #29262a;
+    font-size: 9.4pt;
+    line-height: 1.43;
+    background: #fff;
+  }
+  .sheet { break-after: page; }
+  .sheet:last-child { break-after: auto; }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid #d9cfd3;
+    padding-bottom: 5px;
+    margin-bottom: 13px;
+    color: #7a6c72;
+    font-size: 8pt;
+    letter-spacing: .04em;
+  }
+  header strong { color: #641b35; font-weight: 650; }
+  h1 { font-size: 25pt; line-height: 1.12; color: #4a1226; margin: 4px 0 7px; letter-spacing: -.025em; }
+  h2 { font-size: 15pt; line-height: 1.2; color: #4a1226; margin: 0 0 8px; }
+  h3 { font-size: 10.7pt; color: #641b35; margin: 13px 0 5px; }
+  p { margin: 0 0 7px; }
+  ul, ol { margin: 4px 0 7px; padding-left: 18px; }
+  li { margin: 2px 0; }
+  .subtitle { font-size: 12pt; color: #76656c; margin-bottom: 16px; }
+  .eyebrow { text-transform: uppercase; color: #9b6c47; letter-spacing: .13em; font-size: 8pt; font-weight: 700; margin-top: 10px; }
+  .lead { font-size: 10.5pt; line-height: 1.52; }
+  .callout {
+    background: #f8f3ee;
+    border-left: 4px solid #8e3b52;
+    padding: 9px 12px;
+    margin: 10px 0 12px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card { border: 1px solid #e3dade; border-radius: 7px; padding: 10px 12px; break-inside: avoid; }
+  .card h3 { margin-top: 0; }
+  .flow { display: grid; grid-template-columns: 1fr 18px 1fr 18px 1fr; align-items: stretch; gap: 4px; margin: 10px 0 12px; }
+  .flow .step { background: #f8f3ee; border: 1px solid #e5d8d0; border-radius: 7px; padding: 9px; }
+  .flow .step b { display: block; color: #641b35; margin-bottom: 3px; }
+  .flow .arrow { align-self: center; text-align: center; color: #a77b62; font-size: 15pt; }
+  .page-band { border-top: 4px solid #8e3b52; padding-top: 7px; margin-bottom: 9px; }
+  .page-band .number { color: #a77b62; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; }
+  .page-band h2 { margin-top: 2px; }
+  .question { color: #5f5157; font-style: italic; margin-bottom: 9px; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 8.8pt; }
+  th { text-align: left; color: #4a1226; background: #f5efeb; font-weight: 650; }
+  th, td { border: 1px solid #dfd5d9; padding: 6px 7px; vertical-align: top; }
+  tr { break-inside: avoid; }
+  .compact td { padding: 5px 7px; }
+  .tag { display: inline-block; color: #641b35; background: #f4e8ed; border-radius: 10px; padding: 1px 7px; margin: 1px 3px 2px 0; font-size: 8pt; }
+  .small { font-size: 8.4pt; color: #675b60; }
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 16px; position: relative; margin: 4px 0; }
+  .checklist li:before { content: "✓"; position: absolute; left: 0; color: #8e3b52; font-weight: 700; }
+  .footer { margin-top: 12px; padding-top: 6px; border-top: 1px solid #e2d9dd; color: #85777d; font-size: 7.8pt; display: flex; justify-content: space-between; }
+  code { font-family: "SFMono-Regular", Consolas, monospace; font-size: 8.3pt; color: #641b35; background: #f7f2f4; padding: 1px 3px; border-radius: 3px; }
+  .sheet:not(:first-child) { font-size: 8.7pt; line-height: 1.33; }
+  .sheet:not(:first-child) header { margin-bottom: 9px; }
+  .sheet:not(:first-child) h2 { margin-bottom: 6px; }
+  .sheet:not(:first-child) h3 { margin: 9px 0 4px; }
+  .sheet:not(:first-child) p { margin-bottom: 5px; }
+  .sheet:not(:first-child) ul,
+  .sheet:not(:first-child) ol { margin: 3px 0 5px; }
+  .sheet:not(:first-child) li { margin: 1px 0; }
+  .sheet:not(:first-child) table { margin: 4px 0 7px; font-size: 8.15pt; }
+  .sheet:not(:first-child) th,
+  .sheet:not(:first-child) td { padding: 4px 6px; }
+  .sheet:not(:first-child) .page-band { margin-bottom: 7px; padding-top: 5px; }
+  .sheet:not(:first-child) .question { margin-bottom: 6px; }
+  .sheet:not(:first-child) .card { padding: 8px 10px; }
+  .sheet:not(:first-child) .callout { margin: 7px 0 9px; padding: 7px 10px; }
+  .no-break { break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<section class="sheet">
+  <header><strong>COMP7507 · LAB 4</strong><span>FINAL IMPLEMENTATION PLAN</span></header>
+  <div class="eyebrow">Vibe Coding · Wine Analytics Application</div>
+  <h1>Wine Selection Assistant</h1>
+  <p class="subtitle">From market exploration to a confident, evidence-based bottle choice</p>
+
+  <div class="callout">
+    <p class="lead"><strong>Purpose.</strong> Build a three-page Plotly Dash application that helps a wine beginner answer one practical question: <em>“Which reviewed wine fits my budget, preferred style, and quality expectations?”</em> The application will turn a large review dataset into a guided decision process rather than a collection of disconnected charts.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Intended users</h3>
+      <ul>
+        <li>Wine beginners choosing a bottle for personal use or a casual occasion.</li>
+        <li>Users who may know their budget and broad style preference, but not grape varieties, regions, or review terminology.</li>
+        <li>Users who want to inspect the evidence behind a suggestion instead of receiving an opaque recommendation.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Decision-support principles</h3>
+      <ul>
+        <li>Each page answers one focused question and ends in a clear next action.</li>
+        <li>Every chart supports comparison, filtering, or explanation; redundant charts are excluded.</li>
+        <li>Ratings, prices, sample sizes, and review text remain visible so users can judge trade-offs themselves.</li>
+        <li>Historical reviews support consideration; the app does not claim to predict personal taste or current retail availability.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Overall user workflow</h3>
+  <div class="flow">
+    <div class="step"><b>1 · Explore the market</b>Discover origins and styles, then select a country or category of interest.</div>
+    <div class="arrow">→</div>
+    <div class="step"><b>2 · Build a shortlist</b>Set budget and quality constraints, compare matching wines, and pin up to three candidates.</div>
+    <div class="arrow">→</div>
+    <div class="step"><b>3 · Read and decide</b>Compare candidates, inspect critic reviews and flavor language, then choose a wine to consider buying.</div>
+  </div>
+
+  <h3>Application structure and navigation</h3>
+  <table>
+    <tr><th style="width:21%">Page</th><th style="width:34%">Focused task</th><th>Output carried forward</th></tr>
+    <tr><td><strong>Explore</strong></td><td>“Where should I start looking?”</td><td>Selected country and wine category</td></tr>
+    <tr><td><strong>Shortlist</strong></td><td>“Which wines fit my constraints?”</td><td>Active filters, pinned candidates, selected wine</td></tr>
+    <tr><td><strong>Review &amp; Decide</strong></td><td>“Why might this wine suit me?”</td><td>A transparent final choice and supporting evidence</td></tr>
+  </table>
+
+  <p>A persistent top navigation bar will show all three stages and the user’s current stage. Prominent <strong>“Use these preferences”</strong>, <strong>“Review selected wines”</strong>, and <strong>“Back to shortlist”</strong> actions will make the intended path obvious without forcing a linear journey. Selections will survive navigation through shared Dash state.</p>
+
+  <h3>Planned scope</h3>
+  <p>The first version will reuse the two Lab 2 datasets and the existing wine-themed visual language. It will include linked filtering, three focused dashboards, a recommendation table, and review-text analysis. Live prices, retailer inventory, user accounts, and machine-learning recommendations are intentionally out of scope.</p>
+
+  <div class="footer"><span>Wine Selection Assistant · Final Implementation Plan</span><span>1 / 4</span></div>
+</section>
+
+<section class="sheet">
+  <header><strong>WINE SELECTION ASSISTANT</strong><span>PAGE DESIGN · EXPLORE &amp; SHORTLIST</span></header>
+
+  <div class="page-band">
+    <div class="number">Page 1 · Explore</div>
+    <h2>Explore the Wine Market</h2>
+    <p class="question">Purpose: help a beginner form useful starting preferences without needing prior knowledge of origins or varieties.</p>
+  </div>
+
+  <table>
+    <tr><th style="width:25%">Component</th><th style="width:43%">Design</th><th>Decision value and interaction</th></tr>
+    <tr>
+      <td><strong>Country map</strong><br>Choropleth</td>
+      <td>Color countries by number of reviews. Hover shows review count, average points, median price, and most common variety.</td>
+      <td> Shows where the dataset offers broad evidence. Clicking a country selects it for the other charts and the next page; a dropdown provides an equivalent accessible input.</td>
+    </tr>
+    <tr>
+      <td><strong>Style mix</strong><br>100% stacked bar</td>
+      <td>Compare red, white, rosé, sparkling, dessert, and other wines for the selected country, or the top eight countries by review volume when none is selected.</td>
+      <td>Helps users understand which broad styles are associated with each origin. Clicking a category segment carries that category forward.</td>
+    </tr>
+    <tr>
+      <td><strong>Popular varieties</strong><br>Horizontal bar chart</td>
+      <td>Show the top ten varieties within the current country/category selection, with review counts and average points in hover labels.</td>
+      <td>Introduces recognizable variety names and provides a useful entry point for shortlist filtering.</td>
+    </tr>
+    <tr>
+      <td><strong>Selection summary</strong><br>KPI chips</td>
+      <td>Display matching review count, country count, average points, and median price above the charts.</td>
+      <td>Keeps scale and missing-price context visible. Chips update with every selection.</td>
+    </tr>
+  </table>
+  <p><strong>Page action:</strong> the user clicks <strong>“Use these preferences”</strong> to open Shortlist with the selected country and category already applied. A reset action restores the global view.</p>
+
+  <div class="page-band" style="margin-top:15px">
+    <div class="number">Page 2 · Narrow down</div>
+    <h2>Find My Wine</h2>
+    <p class="question">Purpose: turn broad preferences into a manageable, transparent set of candidate wines.</p>
+  </div>
+
+  <h3>Filters and result controls</h3>
+  <p>
+    <span class="tag">Country</span><span class="tag">Category</span><span class="tag">Variety</span>
+    <span class="tag">Minimum / maximum price</span><span class="tag">Minimum points</span><span class="tag">Flavor keyword</span>
+  </p>
+  <ul>
+    <li>Country and category inherit Explore selections but remain editable. Variety options update to match those choices.</li>
+    <li>Budget uses numeric minimum/maximum inputs plus presets (<em>Under $20</em>, <em>$20–$50</em>, <em>$50–$100</em>) for beginner-friendly control. Minimum points defaults to 80 and can be adjusted across the observed 80–100 range.</li>
+    <li>Optional flavor search matches words in review descriptions. Users can sort results by <em>highest points</em>, <em>lowest price</em>, or <em>most reviews</em>; no unexplained composite score is used.</li>
+  </ul>
+
+  <table>
+    <tr><th style="width:25%">Component</th><th style="width:43%">Design</th><th>Decision value and interaction</th></tr>
+    <tr>
+      <td><strong>Price–quality view</strong><br>Scatter plot</td>
+      <td>One mark per reviewed wine: price on a logarithmic x-axis, critic points on the y-axis, and color by category. Hover reveals title, winery, variety, price, and points.</td>
+      <td>Makes budget–rating trade-offs and expensive outliers visible. Clicking a point selects the same wine in the results table.</td>
+    </tr>
+    <tr>
+      <td><strong>Candidate table</strong><br>Sortable, paginated</td>
+      <td>Columns: title, winery, country, variety, average points, median price, valid vintage, and review count. Show 15 rows per page.</td>
+      <td>Supports direct comparison. Users pin up to three wines; pinned rows remain visible in a compact shortlist above the table.</td>
+    </tr>
+    <tr>
+      <td><strong>Result feedback</strong><br>Summary and empty state</td>
+      <td>Show the number of matches, active-filter chips, and how many records lack a confirmed price.</td>
+      <td>Explains surprising results. When no wines match, suggest relaxing one active constraint rather than showing blank charts.</td>
+    </tr>
+  </table>
+  <p><strong>Page action:</strong> users select a pinned wine and choose <strong>“Review selected wines”</strong>. If no candidate is pinned, the action remains disabled with a short explanation.</p>
+
+  <div class="footer"><span>Wine Selection Assistant · Final Implementation Plan</span><span>2 / 4</span></div>
+</section>
+
+<section class="sheet">
+  <header><strong>WINE SELECTION ASSISTANT</strong><span>PAGE DESIGN · REVIEW &amp; SHARED INTERACTION</span></header>
+
+  <div class="page-band">
+    <div class="number">Page 3 · Understand before deciding</div>
+    <h2>Review Insights &amp; Final Choice</h2>
+    <p class="question">Purpose: explain the shortlisted wines through their review evidence and flavor language, enabling an informed final choice.</p>
+  </div>
+
+  <table>
+    <tr><th style="width:25%">Component</th><th style="width:43%">Design</th><th>Decision value and interaction</th></tr>
+    <tr>
+      <td><strong>Candidate comparison</strong><br>Compact table</td>
+      <td>Compare the pinned wines side by side: origin, category, variety, average points, median price, review count, and top flavor descriptors.</td>
+      <td>Summarizes trade-offs without requiring users to remember the previous page. Selecting a column or row updates the detail panel.</td>
+    </tr>
+    <tr>
+      <td><strong>Wine detail card</strong></td>
+      <td>Show title, winery, origin, variety/category, valid vintage, price, critic points, and the number of underlying reviews.</td>
+      <td>Provides a clear identity for the selected wine and distinguishes missing values from zero.</td>
+    </tr>
+    <tr>
+      <td><strong>Flavor profile</strong><br>Word cloud + descriptor chips</td>
+      <td>Generate from review descriptions after text cleaning. Size reflects term frequency; the top eight descriptors also appear as labeled chips.</td>
+      <td>Translates long reviews into approachable flavor cues. A source toggle switches between <em>this wine</em> and <em>same variety</em>, always showing the number of reviews used.</td>
+    </tr>
+    <tr>
+      <td><strong>Review evidence</strong><br>Expandable text panel</td>
+      <td>Display the selected wine’s complete critic descriptions, with frequent flavor terms highlighted and taster names where available.</td>
+      <td>Allows users to verify the word cloud and read nuance such as acidity, sweetness, body, and finish.</td>
+    </tr>
+  </table>
+
+  <p><strong>Final action:</strong> <strong>“Choose this wine”</strong> creates a concise decision summary containing the wine’s key attributes, the user’s active budget/preference criteria, and links back to the evidence. It does not simulate a purchase.</p>
+
+  <h3>Text-analysis plan</h3>
+  <ul>
+    <li>Lowercase text, normalize punctuation, and extract meaningful unigrams and bigrams so phrases such as “green apple” are not split apart.</li>
+    <li>Remove standard stop words and non-informative wine vocabulary such as “wine,” “flavor,” “aroma,” and “notes.” Retain domain descriptors including fruits, oak, acidity, sweetness, body, and finish.</li>
+    <li>Display at most 40 terms and require a minimum document frequency to reduce one-off words. Frequencies will be recomputed for the selected source.</li>
+    <li>If the selected wine has too little text, show an explicit sparse-data message and invite the user to switch to <em>same variety</em>; do not silently substitute other reviews.</li>
+  </ul>
+
+  <h3>Cross-page state and interaction contract</h3>
+  <table class="compact">
+    <tr><th style="width:28%">Shared state</th><th style="width:32%">How it is set</th><th>Where it is used</th></tr>
+    <tr><td>Country and category</td><td>Map, style bar, or dropdowns</td><td>All page summaries and shortlist filters</td></tr>
+    <tr><td>Budget, points, variety, flavor</td><td>Shortlist controls</td><td>Candidate results and final decision summary</td></tr>
+    <tr><td>Pinned wine IDs (maximum three)</td><td>Candidate table</td><td>Review comparison and navigation badge</td></tr>
+    <tr><td>Selected wine ID</td><td>Scatter point, table, or comparison</td><td>Detail card, word cloud, and review panel</td></tr>
+  </table>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Feedback and recovery</h3>
+      <p>Use synchronized controls, visible active-filter chips, a result count, and clear selected/pinned styling. Back navigation preserves state. Empty selections return to sensible defaults, while genuinely empty results show recovery guidance.</p>
+    </div>
+    <div class="card">
+      <h3>Accessibility and readability</h3>
+      <p>Pair color with labels, use a consistent color per wine category, provide text equivalents in hover labels and tables, keep controls keyboard accessible, and stack cards on narrow screens.</p>
+    </div>
+  </div>
+
+  <div class="footer"><span>Wine Selection Assistant · Final Implementation Plan</span><span>3 / 4</span></div>
+</section>
+
+<section class="sheet">
+  <header><strong>WINE SELECTION ASSISTANT</strong><span>DATA · IMPLEMENTATION · VALIDATION</span></header>
+
+  <h2>Data Preparation</h2>
+  <p>Use <code>data/winemag-data-with-year.csv</code> for review records and <code>data/wine_category.csv</code> for the variety-to-category mapping. Load and cache the merged dataset once at startup, then filter it in memory.</p>
+  <table class="compact">
+    <tr><th style="width:27%">Preparation step</th><th>Planned rule</th></tr>
+    <tr><td>Join and standardize</td><td>Left-join categories on <code>variety</code>; trim text, standardize category labels, and map unmapped varieties to <code>other</code>. Convert <code>US</code> to <code>United States</code> for the map.</td></tr>
+    <tr><td>Numeric fields</td><td>Convert <code>points</code>, <code>price</code>, and <code>year</code> to numeric values. Keep points and price in their observed ranges (80–100 and $4–$3,300); use a logarithmic display for the long-tailed price distribution.</td></tr>
+    <tr><td>Missing and invalid values</td><td>Label missing text as <code>Unknown</code>. Keep missing prices in unfiltered exploration, mark them as unavailable, and exclude them from price-based plots or budget-confirmed results with a visible count. Treat implausible vintages outside 1980–2026 as missing.</td></tr>
+    <tr><td>Wine-level aggregation</td><td>Group reviews by <code>title</code> and <code>winery</code> for candidate comparison. Retain review IDs for traceability; aggregate average points, median price, valid vintage, review count, and combined descriptions.</td></tr>
+  </table>
+
+  <h2>Technical Implementation</h2>
+  <div class="grid-2">
+    <div>
+      <h3>Stack and setup</h3>
+      <ul>
+        <li>Create an isolated environment with <code>python -m venv .venv</code>.</li>
+        <li>Use Python, pandas, NumPy, Plotly, and Dash; add <code>wordcloud</code> for flavor rendering.</li>
+        <li>Use Dash Pages for the three routes and <code>dcc.Store</code> for shared filter/selection state.</li>
+        <li>Reuse Lab 2’s cached loader, figure helpers, empty-state pattern, and burgundy/cream styling.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Proposed structure</h3>
+      <ul>
+        <li><code>app.py</code> — application shell and navigation</li>
+        <li><code>pages/explore.py</code>, <code>shortlist.py</code>, <code>reviews.py</code></li>
+        <li><code>src/data_loader.py</code> — loading, cleaning, aggregation</li>
+        <li><code>src/text_analysis.py</code> — descriptor extraction</li>
+        <li><code>components/</code> — shared filters, cards, and tables</li>
+        <li><code>assets/styles.css</code> — responsive visual system</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Implementation Sequence</h2>
+  <ol>
+    <li><strong>Foundation:</strong> prepare the environment, validate the join, implement cleaning and wine-level aggregation, and confirm summary values against the raw data.</li>
+    <li><strong>Decision flow:</strong> build the navigation shell and shared state, then create Explore and carry country/category selections into Shortlist.</li>
+    <li><strong>Candidate selection:</strong> implement filters, linked scatter/table outputs, sorting, pinning, and empty-state recovery.</li>
+    <li><strong>Review explanation:</strong> add candidate comparison, detail/review panels, descriptor extraction, and the final choice summary.</li>
+    <li><strong>Iterative refinement:</strong> test the complete journey, remove elements that do not change a decision, clarify labels, and improve responsive behavior.</li>
+  </ol>
+
+  <h2>Validation and Completion Criteria</h2>
+  <div class="grid-2">
+    <div>
+      <ul class="checklist">
+        <li>A new user can move from market exploration to a final wine without instructions outside the app.</li>
+        <li>Map, dropdown, scatter, and table selections remain synchronized across pages.</li>
+        <li>Every chart updates correctly under combined filters and communicates its sample size.</li>
+        <li>Missing prices, invalid vintages, sparse reviews, and zero-result filters produce explicit, non-breaking states.</li>
+      </ul>
+    </div>
+    <div>
+      <ul class="checklist">
+        <li>Pinning is limited to three wines; the selected wine and its review evidence always match.</li>
+        <li>Word-cloud terms come only from the labeled source and can be verified in the displayed reviews.</li>
+        <li>Prices and ratings in aggregated views match reproducible pandas calculations.</li>
+        <li>The layout remains usable at desktop and narrow-screen widths, with no chart lacking a clear decision purpose.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p><strong>End-to-end acceptance scenario.</strong> A beginner selects France on Explore, chooses white wine, sets a $20–$50 budget and a minimum of 88 points on Shortlist, pins two high-rated candidates, compares their review language on Review &amp; Decide, and leaves with one wine whose price, rating, and flavor evidence match the stated preferences.</p>
+  </div>
+
+  <div class="footer"><span>Wine Selection Assistant · Final Implementation Plan</span><span>4 / 4</span></div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+/* Wine Origin Dashboard — 酒主题:奶油纸底 + 深 burgundy 侧栏 + Inter 字体 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background:
+        radial-gradient(1200px 500px at 85% -10%, #f3e5d8 0%, rgba(243,229,216,0) 60%),
+        #f6f1e9;
+    font-family: 'Inter', 'PingFang SC', -apple-system, 'Segoe UI', Roboto, sans-serif;
+    color: #2b2b2b;
+    -webkit-font-smoothing: antialiased;
+}
+
+.page { max-width: 1280px; margin: 0 auto; padding: 28px 28px 40px; }
+
+/* ---- 头部 ---- */
+.page-header {
+    padding: 20px 24px 18px;
+    margin-bottom: 20px;
+    background: linear-gradient(120deg, #4a1226 0%, #8e3b52 70%, #b5654a 100%);
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(74, 18, 38, 0.25);
+}
+.eyebrow {
+    margin: 0 0 4px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: #e9c46a;
+}
+.page-header h1 {
+    margin: 0 0 6px;
+    font-size: 30px; font-weight: 700;
+    letter-spacing: 0.2px; color: #fdfbf7;
+}
+.subtitle { margin: 0; color: #f0dccd; font-size: 14px; }
+
+/* ---- 动态数字芯片条 ---- */
+.stat-row {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 14px;
+}
+.stat-chip {
+    background: rgba(253, 251, 247, 0.14);
+    border: 1px solid rgba(253, 251, 247, 0.35);
+    color: #fdfbf7;
+    font-size: 12.5px; font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 999px;
+    backdrop-filter: blur(2px);
+    transition: background 0.25s ease;
+}
+
+/* ---- 布局 ---- */
+.body { display: grid; grid-template-columns: 280px 1fr; gap: 20px; align-items: start; }
+
+.sidebar {
+    background: #351520;
+    border-radius: 14px;
+    padding: 22px 18px 26px;
+    position: sticky;
+    top: 20px;
+    box-shadow: 0 4px 14px rgba(74, 18, 38, 0.18);
+}
+.sidebar h2 { margin: 0 0 14px; font-size: 16px; color: #fdfbf7; font-weight: 600; }
+.sidebar label {
+    display: block;
+    margin: 18px 0 6px;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #c99a6b;
+}
+.hint { margin-top: 20px; font-size: 12px; color: #a0785a; line-height: 1.55; }
+
+/* ---- 图表卡片 ---- */
+.content { display: flex; flex-direction: column; gap: 18px; }
+.content > .dash-graph {
+    background: #fffdf9;
+    border: 1px solid #efe6da;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(74, 18, 38, 0.06);
+    padding: 8px 10px;
+    transition: box-shadow 0.25s ease;
+}
+.content > .dash-graph:hover {
+    box-shadow: 0 6px 18px rgba(74, 18, 38, 0.12);
+}
+
+.mode-row {
+    background: #fffdf9;
+    border: 1px solid #efe6da;
+    border-bottom: none;
+    border-radius: 14px 14px 0 0;
+    margin-bottom: -18px;
+    padding: 12px 18px 2px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 2px 8px rgba(74, 18, 38, 0.06);
+}
+.mode-label { font-size: 12px; font-weight: 600; color: #8e3b52; letter-spacing: 0.4px; }
+.mode-radio { display: flex; gap: 18px; font-size: 13.5px; }
+.mode-radio label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.mode-radio input[type="radio"] { accent-color: #8e3b52; }
+
+.page-footer {
+    margin-top: 26px;
+    text-align: center;
+    font-size: 12px;
+    color: #a08b7a;
+}
+
+/* ---- 深色侧栏上的 Dash 组件修复 ---- */
+
+/* 下拉框(react-select,新旧 class 族都覆盖) */
+.sidebar .dash-dropdown,
+.sidebar .Select {
+    font-family: inherit;
+    font-size: 13.5px;
+}
+.sidebar .dash-select__control,
+.sidebar .Select-control {
+    background: #fffdf9;
+    border: 1px solid #d9c3ae;
+    border-radius: 10px;
+    min-height: 38px;
+    box-shadow: none;
+}
+.sidebar .dash-select__control:hover,
+.sidebar .Select-control:hover { border-color: #8e3b52; }
+.sidebar .dash-select__control--is-focused,
+.sidebar .is-focused > .Select-control {
+    border-color: #8e3b52 !important;
+    box-shadow: 0 0 0 2px rgba(142, 59, 82, 0.18) !important;
+}
+.sidebar .dash-select__placeholder,
+.sidebar .Select-placeholder {
+    color: #8a796b;
+    font-weight: 400;
+}
+.sidebar .dash-select__single-value,
+.sidebar .Select-value-label {
+    color: #2b2b2b !important;
+    font-weight: 500;
+}
+.sidebar .dash-select__multi-value,
+.sidebar .Select-value {
+    background: #f3e0d5;
+    border: none;
+    border-radius: 999px;
+    padding: 1px 4px;
+    font-size: 12px;
+    color: #7b2d43;
+}
+.sidebar .dash-select__multi-value__label { color: #7b2d43; }
+.sidebar .dash-select__menu,
+.sidebar .Select-menu-outer {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e3d5c8;
+    box-shadow: 0 8px 24px rgba(74, 18, 38, 0.16);
+}
+.sidebar .dash-select__option,
+.sidebar .Select-option { font-size: 13.5px; }
+.sidebar .dash-select__option--is-focused,
+.sidebar .Select-option.is-focused { background: #f7ece2; }
+.sidebar .dash-select__option--is-selected,
+.sidebar .Select-option.is-selected { background: #8e3b52; color: #fffdf9; }
+.sidebar .dash-select__indicator { color: #8a796b; }
+
+/* 价格滑杆:Dash 4 的填充色走 CSS 变量 --Dash-Fill-Interactive-Strong,
+   直接在 .sidebar 上覆盖变量(Dash 自带高优先级 :not() 规则也用同一个变量) */
+.sidebar {
+    --Dash-Fill-Interactive-Strong: #c1663e;
+}
+.sidebar .dash-slider-track,
+.sidebar .dash-slider .dash-track { background: #5c3140; }
+.sidebar .dash-slider-thumb {
+    background: #fdfbf7;
+    opacity: 1;
+}
+.sidebar .dash-slider-thumb:hover,
+.sidebar .dash-slider-thumb:focus {
+    border-color: #e9c46a;
+    box-shadow: 0 0 0 3px rgba(233, 196, 106, 0.25);
+}
+.sidebar .dash-slider-mark {
+    color: #d9c3ae;
+    font-size: 11px;
+    font-family: inherit;
+}
+.sidebar .dash-slider-tooltip {
+    background: #4a1226;
+    font-family: inherit;
+    font-size: 12px;
+}
+
+@media (max-width: 900px) {
+    .body { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+}
